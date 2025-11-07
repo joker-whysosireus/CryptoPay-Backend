@@ -4,3 +4,5 @@
 [functions.auth]
   origin = "https://cryptopayapp.netlify.app"
 
+[functions.update-wallets]
+  origin = "https://cryptopayapp.netlify.app"
