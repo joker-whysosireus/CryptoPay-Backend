@@ -1,0 +1,5 @@
+[build]
+  functions = "netlify/functions"
+
+[functions.auth]
+  origin = "https://cryptopayapp.netlify.app"
