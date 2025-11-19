@@ -2,16 +2,16 @@
   functions = "netlify/functions"
 
 [functions.auth]
-  origin = "https://cryptopayapp.netlify.app"
+  origin = "https://watchandearn.online"
 
 [functions.save-wallet.js]
-  origin = "https://cryptopayapp.netlify.app"
+  origin = "https://watchandearn.online"
 
 [functions.update-balance.js]
-  origin = "https://cryptopayapp.netlify.app"
+  origin = "https://watchandearn.online"
 
 [functions.withdraw-notification.js]
-  origin = "https://cryptopayapp.netlify.app"
+  origin = "https://watchandearn.online"
 
 [functions.user-notification.js]
-  origin = "https://cryptopayapp.netlify.app"
+  origin = "https://watchandearn.online"
