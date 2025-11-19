@@ -12,3 +12,6 @@
 
 [functions.withdraw-notification.js]
   origin = "https://cryptopayapp.netlify.app"
+
+[functions.user-notification.js]
+  origin = "https://cryptopayapp.netlify.app"

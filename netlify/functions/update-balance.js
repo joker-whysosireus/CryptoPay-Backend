@@ -93,8 +93,7 @@ exports.handler = async (event, context) => {
         const { data: updatedUser, error: updateError } = await supabase
             .from('cryptopay')
             .update({ 
-                balance: newBalance.toFixed(3),
-                updated_at: new Date().toISOString()
+                balance: newBalance.toFixed(6) // Используем 6 знаков после запятой как в структуре таблицы
             })
             .eq('telegram_user_id', telegram_user_id)
             .select('*')

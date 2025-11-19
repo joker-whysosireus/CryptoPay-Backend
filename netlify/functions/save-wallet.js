@@ -79,8 +79,7 @@ exports.handler = async (event, context) => {
         const { data: updatedUser, error: updateError } = await supabase
             .from('cryptopay')
             .update({ 
-                wallets: wallet_address,
-                updated_at: new Date().toISOString()
+                wallets: wallet_address
             })
             .eq('telegram_user_id', telegram_user_id)
             .select('*')
