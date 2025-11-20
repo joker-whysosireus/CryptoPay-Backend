@@ -13,8 +13,5 @@
 [functions.withdraw-notification.js]
   origin = "https://watchandearn.online"
 
-[functions.user-notification.js]
-  origin = "https://watchandearn.online"
-
 [functions.watch-ad-reward.js]
   origin = "https://watchandearn.online"

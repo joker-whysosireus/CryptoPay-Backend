@@ -104,14 +104,13 @@ exports.handler = async (event, context) => {
             console.log("watch-ad-reward.js: Updating user data - new balance:", newBalance, 
                        "total ads:", newTotalAdsWatched, "weekly ads:", newWeeklyAdsWatched);
 
-            // Обновляем данные пользователя
+            // Обновляем данные пользователя (убрано поле updated_at)
             const { data: updatedUser, error: updateError } = await supabase
                 .from('cryptopay')
                 .update({
                     balance: newBalance,
                     total_ads_watched: newTotalAdsWatched,
-                    weekly_ads_watched: newWeeklyAdsWatched,
-                    updated_at: new Date().toISOString()
+                    weekly_ads_watched: newWeeklyAdsWatched
                 })
                 .eq('telegram_user_id', telegram_user_id)
                 .select('*')

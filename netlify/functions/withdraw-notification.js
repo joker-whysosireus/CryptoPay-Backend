@@ -124,7 +124,7 @@ exports.handler = async (event) => {
                     text: `✅ Withdrawal Request Received\n\n` +
                           `Amount: ${amount} USDT\n` +
                           `Status: Processing\n\n` +
-                          `Your funds will be sent within 24 hours.`,
+                          `The funds will be sent within a week.`,
                     parse_mode: 'Markdown'
                 })
             });
