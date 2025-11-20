@@ -223,7 +223,7 @@ exports.handler = async (event, context) => {
                         if (referrer) {
                             console.log("auth.js: Referrer found:", referrer);
                             const newReferralsCount = referrer.referrals_count + 1;
-                            const referralBonus = 0.001;
+                            const referralBonus = 0.05; // Изменено с 0.001 на 0.05
 
                             const newReferralsEarned = parseFloat((referrer.referrals_earned + referralBonus).toFixed(6));
                             const newBalance = parseFloat((referrer.balance + referralBonus).toFixed(6));
