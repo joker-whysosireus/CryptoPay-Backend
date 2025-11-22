@@ -18,3 +18,9 @@
 
 [functions.activate-boost.js]
   origin = "https://watchandearn.online"
+
+[functions.create-invoice.js]
+  origin = "https://watchandearn.online"
+
+[functions.verify-payment.js]
+  origin = "https://watchandearn.online"
