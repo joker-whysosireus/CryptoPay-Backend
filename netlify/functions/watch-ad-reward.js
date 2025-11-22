@@ -95,8 +95,13 @@ exports.handler = async (event, context) => {
 
             console.log("watch-ad-reward.js: User found:", existingUser);
 
+            // Проверяем, есть ли у пользователя активный буст
+            const hasBoost = existingUser.has_boost || false;
+            const rewardAmount = hasBoost ? 0.03 : 0.01;
+            
+            console.log("watch-ad-reward.js: User has boost:", hasBoost, "Reward amount:", rewardAmount);
+
             // Рассчитываем новые значения
-            const rewardAmount = 0.01;
             const newBalance = parseFloat((existingUser.balance + rewardAmount).toFixed(6));
             const newTotalAdsWatched = existingUser.total_ads_watched + 1;
             const newWeeklyAdsWatched = existingUser.weekly_ads_watched + 1;
@@ -104,13 +109,14 @@ exports.handler = async (event, context) => {
             console.log("watch-ad-reward.js: Updating user data - new balance:", newBalance, 
                        "total ads:", newTotalAdsWatched, "weekly ads:", newWeeklyAdsWatched);
 
-            // Обновляем данные пользователя (убрано поле updated_at)
+            // Обновляем данные пользователя
             const { data: updatedUser, error: updateError } = await supabase
                 .from('cryptopay')
                 .update({
                     balance: newBalance,
                     total_ads_watched: newTotalAdsWatched,
-                    weekly_ads_watched: newWeeklyAdsWatched
+                    weekly_ads_watched: newWeeklyAdsWatched,
+                    updated_at: new Date().toISOString()
                 })
                 .eq('telegram_user_id', telegram_user_id)
                 .select('*')
@@ -139,6 +145,7 @@ exports.handler = async (event, context) => {
                         username: updatedUser.username,
                         first_name: updatedUser.first_name,
                         reward_amount: rewardAmount,
+                        has_boost: hasBoost,
                         timestamp: new Date().toISOString()
                     }),
                 });
@@ -156,7 +163,8 @@ exports.handler = async (event, context) => {
                     userData: updatedUser,
                     reward: {
                         amount: rewardAmount,
-                        message: `Successfully rewarded ${rewardAmount} USDT for watching ad`
+                        has_boost: hasBoost,
+                        message: `Successfully rewarded ${rewardAmount} USDT for watching ad ${hasBoost ? '(Boost active!)' : ''}`
                     }
                 }),
             };
