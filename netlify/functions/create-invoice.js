@@ -25,8 +25,6 @@ exports.handler = async (event, context) => {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
       },
     };
   }
@@ -34,35 +32,43 @@ exports.handler = async (event, context) => {
   const botApi = new TelegramBot(process.env.BOT_TOKEN);
 
   try {
-    // Создание инвойса
+    if (!event.body) {
+      throw new Error("Request body is empty");
+    }
+
     const { title, description, payload, currency, prices } = JSON.parse(event.body);
 
+    console.log("Данные запроса на инвойс:", {
+      title,
+      description,
+      payload,
+      currency,
+      prices
+    });
+
     // Валидация входных данных
-    if (typeof title !== 'string' || title.length > 100) {
+    if (!title || typeof title !== 'string' || title.length > 100) {
       throw new Error("Неверный заголовок");
     }
-    if (typeof description !== 'string' || description.length > 200) {
+    if (!description || typeof description !== 'string' || description.length > 200) {
       throw new Error("Неверное описание");
     }
     if (currency !== "XTR") {
-      throw new Error("Неверная валюта.  Должно быть XTR.");
+      throw new Error("Неверная валюта. Должно быть XTR.");
     }
-    if (!Array.isArray(prices) || prices.length !== 1) {
+    if (!Array.isArray(prices) || prices.length === 0) {
       throw new Error("Неверный формат цен");
     }
-    if (typeof prices[0].amount !== 'number' || prices[0].amount <= 0) {
-      throw new Error("Неверная цена");
+    
+    // Проверяем каждую цену
+    for (const price of prices) {
+      if (typeof price.amount !== 'number' || price.amount <= 0) {
+        throw new Error("Неверная цена: amount должен быть положительным числом");
+      }
+      if (!price.label || typeof price.label !== 'string') {
+        throw new Error("Неверная метка цены");
+      }
     }
-    if (typeof prices[0].label !== 'string') {
-      throw new Error("Неверная метка цены");
-    }
-
-    console.log("Данные запроса на инвойс:");
-    console.log("Заголовок:", title);
-    console.log("Описание:", description);
-    console.log("Payload:", payload);
-    console.log("Валюта:", currency);
-    console.log("Цены:", JSON.stringify(prices));
 
     let invoiceLink;
     try {
@@ -76,18 +82,14 @@ exports.handler = async (event, context) => {
       );
 
       console.log("Сгенерированная ссылка на инвойс:", invoiceLink);
+
+      if (!invoiceLink) {
+        throw new Error("Invoice link was not generated");
+      }
+
     } catch (createInvoiceError) {
       console.error("Ошибка при создании ссылки на инвойс:", createInvoiceError);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: "Не удалось создать ссылку на инвойс: " + createInvoiceError.message }),
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-        },
-      };
+      throw new Error("Не удалось создать ссылку на инвойс: " + createInvoiceError.message);
     }
 
     return {
@@ -96,8 +98,6 @@ exports.handler = async (event, context) => {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
       },
     };
 
@@ -105,12 +105,12 @@ exports.handler = async (event, context) => {
     console.error("Ошибка при обработке запроса:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Общая ошибка: " + error.message }),
+      body: JSON.stringify({ 
+        error: "Ошибка при создании инвойса: " + error.message 
+      }),
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
       },
     };
   }
