@@ -24,3 +24,6 @@
 
 [functions.verify-payment.js]
   origin = "https://watchandearn.online"
+
+[functions.update-booster.js]
+  origin = "https://watchandearn.online"

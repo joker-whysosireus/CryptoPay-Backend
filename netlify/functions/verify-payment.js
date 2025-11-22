@@ -15,6 +15,61 @@ const itemConfigs = {
         price: 1,
         currency: "XTR",
         dbColumn: "has_boost",
+        isBooster: false
+    },
+    // Бустеры для пассивного заработка
+    mini_booster: {
+        item_id: "mini_booster",
+        title: "Mini Booster",
+        description: "Generates 0.0001 USDT per hour",
+        price: 1,
+        currency: "XTR",
+        dbColumn: "mini_booster",
+        isBooster: true
+    },
+    basic_booster: {
+        item_id: "basic_booster",
+        title: "Basic Booster",
+        description: "Generates 0.0005 USDT per hour",
+        price: 1,
+        currency: "XTR",
+        dbColumn: "basic_booster",
+        isBooster: true
+    },
+    advanced_booster: {
+        item_id: "advanced_booster",
+        title: "Advanced Booster",
+        description: "Generates 0.001 USDT per hour",
+        price: 1,
+        currency: "XTR",
+        dbColumn: "advanced_booster",
+        isBooster: true
+    },
+    pro_booster: {
+        item_id: "pro_booster",
+        title: "Pro Booster",
+        description: "Generates 0.005 USDT per hour",
+        price: 1,
+        currency: "XTR",
+        dbColumn: "pro_booster",
+        isBooster: true
+    },
+    ultimate_booster: {
+        item_id: "ultimate_booster",
+        title: "Ultimate Booster",
+        description: "Generates 0.01 USDT per hour",
+        price: 1,
+        currency: "XTR",
+        dbColumn: "ultimate_booster",
+        isBooster: true
+    },
+    mega_booster: {
+        item_id: "mega_booster",
+        title: "Mega Booster",
+        description: "Generates 0.05 USDT per hour",
+        price: 1,
+        currency: "XTR",
+        dbColumn: "mega_booster",
         isBooster: true
     }
 };
@@ -138,8 +193,8 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Для бустеров: проверка, куплен ли уже бустер
-        if (isBooster && fullUserData[itemConfig.dbColumn]) {
+        // Для бустеров: проверка, куплен ли уже бустер (если нужно ограничение на 1)
+        if (isBooster && fullUserData[itemConfig.dbColumn] && fullUserData[itemConfig.dbColumn] > 0) {
             return {
                 statusCode: 200,
                 body: JSON.stringify({ 
@@ -166,9 +221,15 @@ exports.handler = async (event, context) => {
             updated_at: new Date().toISOString()
         };
 
-        // Для бустеров устанавливаем флаг
+        // Для бустеров увеличиваем количество
         if (isBooster) {
-            updateData[itemConfig.dbColumn] = true;
+            const currentCount = fullUserData[itemConfig.dbColumn] || 0;
+            updateData[itemConfig.dbColumn] = currentCount + 1;
+        }
+
+        // Для ad_boost устанавливаем флаг
+        if (item_id === 'ad_boost') {
+            updateData.has_boost = true;
         }
 
         // Обновление пользователя в таблице cryptopay
@@ -199,7 +260,9 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ 
                 success: true,
                 message: "Payment processed successfully",
-                boost_activated: item_id === 'ad_boost' ? true : null
+                boost_activated: item_id === 'ad_boost' ? true : null,
+                booster_purchased: isBooster ? item_id : null,
+                booster_count: isBooster ? (fullUserData[itemConfig.dbColumn] || 0) + 1 : null
             }),
             headers: {
                 "Content-Type": "application/json",

@@ -1,4 +1,3 @@
-// netlify/functions/create-invoice.js
 import TelegramBot from 'node-telegram-bot-api';
 import 'dotenv/config';
 
