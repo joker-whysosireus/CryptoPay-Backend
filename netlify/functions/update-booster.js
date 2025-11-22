@@ -96,15 +96,29 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Получаем текущее количество бустеров и увеличиваем на 1
-    const currentCount = userData[columnToUpdate] || 0;
-    const newCount = currentCount + 1;
+    // Проверяем, не активирован ли уже бустер
+    const isAlreadyActivated = userData[columnToUpdate];
+    
+    if (isAlreadyActivated) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ 
+          success: false, 
+          error: "Booster already activated",
+          already_activated: true
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      };
+    }
 
-    // Обновляем данные пользователя
+    // Обновляем данные пользователя - устанавливаем бустер в true
     const { error: updateError } = await supabase
       .from('cryptopay')
       .update({
-        [columnToUpdate]: newCount,
+        [columnToUpdate]: true,
         updated_at: new Date().toISOString()
       })
       .eq('telegram_user_id', telegram_user_id);
@@ -129,9 +143,9 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       body: JSON.stringify({ 
         success: true,
-        message: "Booster updated successfully",
+        message: "Booster activated successfully",
         booster_type: booster_type,
-        new_count: newCount
+        activated: true
       }),
       headers: {
         "Content-Type": "application/json",
