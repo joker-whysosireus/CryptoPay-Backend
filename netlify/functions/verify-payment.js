@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -7,7 +6,60 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const itemConfigs = {
-    // Ad Boost для CryptoPay
+    mini_booster: {
+        item_id: "mini_booster",
+        title: "Mini",
+        usdtPerHour: 0.0001,
+        price: 1,
+        currency: "XTR",
+        dbColumn: "mini_booster",
+        isBooster: true
+    },
+    basic_booster: {
+        item_id: "basic_booster",
+        title: "Basic",
+        usdtPerHour: 0.0005,
+        price: 1,
+        currency: "XTR",
+        dbColumn: "basic_booster",
+        isBooster: true
+    },
+    advanced_booster: {
+        item_id: "advanced_booster",
+        title: "Advanced",
+        usdtPerHour: 0.001,
+        price: 1,
+        currency: "XTR",
+        dbColumn: "advanced_booster",
+        isBooster: true
+    },
+    pro_booster: {
+        item_id: "pro_booster",
+        title: "Pro",
+        usdtPerHour: 0.005,
+        price: 1,
+        currency: "XTR",
+        dbColumn: "pro_booster",
+        isBooster: true
+    },
+    ultimate_booster: {
+        item_id: "ultimate_booster",
+        title: "Ultimate",
+        usdtPerHour: 0.01,
+        price: 1,
+        currency: "XTR",
+        dbColumn: "ultimate_booster",
+        isBooster: true
+    },
+    mega_booster: {
+        item_id: "mega_booster",
+        title: "Mega",
+        usdtPerHour: 0.05,
+        price: 1,
+        currency: "XTR",
+        dbColumn: "mega_booster",
+        isBooster: true
+    },
     ad_boost: {
         item_id: "ad_boost",
         title: "Ad Boost",
@@ -16,61 +68,6 @@ const itemConfigs = {
         currency: "XTR",
         dbColumn: "has_boost",
         isBooster: false
-    },
-    // Бустеры для пассивного заработка
-    mini_booster: {
-        item_id: "mini_booster",
-        title: "Mini Booster",
-        description: "Generates 0.0001 USDT per hour",
-        price: 1,
-        currency: "XTR",
-        dbColumn: "mini_booster",
-        isBooster: true
-    },
-    basic_booster: {
-        item_id: "basic_booster",
-        title: "Basic Booster",
-        description: "Generates 0.0005 USDT per hour",
-        price: 1,
-        currency: "XTR",
-        dbColumn: "basic_booster",
-        isBooster: true
-    },
-    advanced_booster: {
-        item_id: "advanced_booster",
-        title: "Advanced Booster",
-        description: "Generates 0.001 USDT per hour",
-        price: 1,
-        currency: "XTR",
-        dbColumn: "advanced_booster",
-        isBooster: true
-    },
-    pro_booster: {
-        item_id: "pro_booster",
-        title: "Pro Booster",
-        description: "Generates 0.005 USDT per hour",
-        price: 1,
-        currency: "XTR",
-        dbColumn: "pro_booster",
-        isBooster: true
-    },
-    ultimate_booster: {
-        item_id: "ultimate_booster",
-        title: "Ultimate Booster",
-        description: "Generates 0.01 USDT per hour",
-        price: 1,
-        currency: "XTR",
-        dbColumn: "ultimate_booster",
-        isBooster: true
-    },
-    mega_booster: {
-        item_id: "mega_booster",
-        title: "Mega Booster",
-        description: "Generates 0.05 USDT per hour",
-        price: 1,
-        currency: "XTR",
-        dbColumn: "mega_booster",
-        isBooster: true
     }
 };
 
@@ -193,8 +190,8 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Для бустеров: проверка, куплен ли уже бустер (если нужно ограничение на 1)
-        if (isBooster && fullUserData[itemConfig.dbColumn] && fullUserData[itemConfig.dbColumn] > 0) {
+        // Для бустеров: проверка, куплен ли уже бустер (boolean check)
+        if (isBooster && fullUserData[itemConfig.dbColumn]) {
             return {
                 statusCode: 200,
                 body: JSON.stringify({ 
@@ -221,10 +218,9 @@ exports.handler = async (event, context) => {
             updated_at: new Date().toISOString()
         };
 
-        // Для бустеров увеличиваем количество
+        // Для бустеров устанавливаем флаг в true
         if (isBooster) {
-            const currentCount = fullUserData[itemConfig.dbColumn] || 0;
-            updateData[itemConfig.dbColumn] = currentCount + 1;
+            updateData[itemConfig.dbColumn] = true;
         }
 
         // Для ad_boost устанавливаем флаг
@@ -261,8 +257,7 @@ exports.handler = async (event, context) => {
                 success: true,
                 message: "Payment processed successfully",
                 boost_activated: item_id === 'ad_boost' ? true : null,
-                booster_purchased: isBooster ? item_id : null,
-                booster_count: isBooster ? (fullUserData[itemConfig.dbColumn] || 0) + 1 : null
+                booster_purchased: isBooster ? item_id : null
             }),
             headers: {
                 "Content-Type": "application/json",
