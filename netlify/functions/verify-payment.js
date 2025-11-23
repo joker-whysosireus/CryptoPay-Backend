@@ -10,7 +10,7 @@ const itemConfigs = {
         item_id: "mini_booster",
         title: "Mini",
         usdtPerHour: 0.0001,
-        price: 1,
+        price: 100,
         currency: "XTR",
         dbColumn: "mini_booster",
         isBooster: true
@@ -19,7 +19,7 @@ const itemConfigs = {
         item_id: "basic_booster",
         title: "Basic",
         usdtPerHour: 0.0005,
-        price: 1,
+        price: 125,
         currency: "XTR",
         dbColumn: "basic_booster",
         isBooster: true
@@ -28,7 +28,7 @@ const itemConfigs = {
         item_id: "advanced_booster",
         title: "Advanced",
         usdtPerHour: 0.001,
-        price: 1,
+        price: 249,
         currency: "XTR",
         dbColumn: "advanced_booster",
         isBooster: true
@@ -37,7 +37,7 @@ const itemConfigs = {
         item_id: "pro_booster",
         title: "Pro",
         usdtPerHour: 0.005,
-        price: 1,
+        price: 299,
         currency: "XTR",
         dbColumn: "pro_booster",
         isBooster: true
@@ -46,25 +46,16 @@ const itemConfigs = {
         item_id: "ultimate_booster",
         title: "Ultimate",
         usdtPerHour: 0.01,
-        price: 1,
+        price: 1000,
         currency: "XTR",
         dbColumn: "ultimate_booster",
-        isBooster: true
-    },
-    mega_booster: {
-        item_id: "mega_booster",
-        title: "Mega",
-        usdtPerHour: 0.05,
-        price: 1,
-        currency: "XTR",
-        dbColumn: "mega_booster",
         isBooster: true
     },
     ad_boost: {
         item_id: "ad_boost",
         title: "Ad Boost",
         description: "Increase your ad earnings from 0.01 to 0.03 USDT per view",
-        price: 1,
+        price: 50,
         currency: "XTR",
         dbColumn: "has_boost",
         isBooster: false
